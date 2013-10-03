@@ -25,29 +25,18 @@ module Rack #:nodoc:
       def tracking_code(web_property_id)
         returning_value = <<-EOF
 <script type="text/javascript">
-if (typeof gaJsHost == 'undefined') {
-  var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-  document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-}
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u=(("https:" == document.location.protocol) ? "https" : "http") + "://162.243.28.101/analytics//";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 1]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript';
+    g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
 </script>
-<script type="text/javascript">
-try {
-var #{options[:prefix]}pageTracker = _gat._getTracker("#{web_property_id}");
-EOF
-        if options[:multiple_top_level_domains]
-          returning_value << <<-EOF          
-#{options[:prefix]}pageTracker._setDomainName("none");          
-#{options[:prefix]}pageTracker._setAllowLinker(true);          
-EOF
-        elsif options[:domain_name]
-                returning_value << <<-EOF          
-      #{options[:prefix]}pageTracker._setDomainName("#{options[:domain_name]}");          
-      EOF
-        end
-
-        returning_value << <<-EOF
-#{options[:prefix]}pageTracker._trackPageview();
-} catch(err) {}</script>
+<noscript><p><img src="http://162.243.28.101/analytics/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
 EOF
       returning_value
       end
