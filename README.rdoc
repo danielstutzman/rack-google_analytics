@@ -6,7 +6,7 @@ Rack middleware to embed Piwik analytics tracking code.
 
   require "rack/piwik"
 
-  use Rack::Piwik, :web_property_id => "UA-000000-1"
+  use Rack::Piwik, piwik_url: "http://1.2.3.4/analytics/"
 
   app = lambda { |env| [200, { 'Content-Type' => 'text/html' }, '<html><body></body></html>'] }
   run app
@@ -19,7 +19,7 @@ In your `Gemfile`:
 
 In your `config/application.rb`
 
-  config.middleware.use "Rack::Piwik", :web_property_id => "UA-0000000-1"
+  config.middleware.use "Rack::Piwik", piwik_url: "http://1.2.3.4/analytics/"
 
 == Copyright
 
