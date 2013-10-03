@@ -1,5 +1,5 @@
 module Rack #:nodoc:
-  class GoogleAnalytics < Struct.new :app, :options
+  class Piwik < Struct.new :app, :options
 
     def call(env)
       status, headers, response = app.call(env)

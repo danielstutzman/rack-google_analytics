@@ -1,1 +1,1 @@
-require 'rack/google_analytics'
+require 'rack/piwik'

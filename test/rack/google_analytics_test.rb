@@ -1,9 +1,9 @@
 require 'test/unit'
 require 'rack/mock'
 
-require 'rack/google_analytics'
+require 'rack/piwik'
 
-class Rack::GoogleAnalyticsTest < Test::Unit::TestCase
+class Rack::PiwikTest < Test::Unit::TestCase
 
   def test_embed_tracking_code_at_the_end_of_html_body
     assert_match TRACKER_EXPECT, request.body
@@ -59,10 +59,10 @@ class Rack::GoogleAnalyticsTest < Test::Unit::TestCase
     HTML_DOC = <<-EOF
     <html>
       <head>
-        <title>Rack::GoogleAnalytics</title>
+        <title>Rack::Piwik</title>
       </head>
       <body>
-        <h1>Rack::GoogleAnalytics</h1>
+        <h1>Rack::Piwik</h1>
       </body>
     </html>
     EOF
@@ -89,7 +89,7 @@ class Rack::GoogleAnalyticsTest < Test::Unit::TestCase
       opts[:body]         ||= [HTML_DOC]
       rack_app = lambda { |env| [200, { 'Content-Type' => opts.delete(:content_type) }, opts.delete(:body)] }
       opts[:web_property_id] ||= WEB_PROPERTY_ID
-      Rack::GoogleAnalytics.new(rack_app, opts)
+      Rack::Piwik.new(rack_app, opts)
     end
 
 end
