@@ -25,8 +25,8 @@ module Rack #:nodoc:
     protected
       def setup_custom_vars
         git_dir = nil
-        exercise_dir = nil
         dir = Dir.pwd
+        exercise_dir = ::File.split(dir)[1]
         last_dir = nil
         while dir != last_dir
           git_dir = ::File.join(dir, '.git')
