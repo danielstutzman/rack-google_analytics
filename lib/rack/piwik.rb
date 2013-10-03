@@ -25,7 +25,7 @@ module Rack #:nodoc:
     protected
       def setup_custom_vars
         git_dir = nil
-        project_dir = nil
+        exercise_dir = nil
         dir = Dir.pwd
         last_dir = nil
         while dir != last_dir
@@ -33,7 +33,7 @@ module Rack #:nodoc:
           break if Dir.exists?(git_dir)
 
           last_dir = dir
-          dir, project_dir = ::File.split(dir) # go up one level
+          dir, exercise_dir = ::File.split(dir) # go up one level
           git_dir = nil
         end
 
@@ -52,7 +52,7 @@ module Rack #:nodoc:
           end
         end
 
-        { git_origin_url: git_origin_url, project_dir: project_dir }
+        { git_origin_url: git_origin_url, exercise_dir: exercise_dir }
       end
 
       # Returns JS to be embeded. This takes one argument, a Web Property ID
