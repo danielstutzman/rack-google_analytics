@@ -1,5 +1,9 @@
 module Rack #:nodoc:
   class Piwik < Struct.new :app, :options
+    def initialize(*args)
+      super(*args)
+      @custom_vars = setup_custom_vars
+    end
 
     def call(env)
       status, headers, response = app.call(env)
@@ -19,13 +23,52 @@ module Rack #:nodoc:
     end
 
     protected
+      def setup_custom_vars
+        git_dir = nil
+        project_dir = nil
+        dir = Dir.pwd
+        last_dir = nil
+        while dir != last_dir
+          git_dir = ::File.join(dir, '.git')
+          break if Dir.exists?(git_dir)
+
+          last_dir = dir
+          dir, project_dir = ::File.split(dir) # go up one level
+          git_dir = nil
+        end
+
+        git_origin_url = nil
+        if git_dir
+          config = ::File.join(git_dir, 'config')
+          found_origin = false
+          ::File.open(config).each_line do |line|
+            line.rstrip!
+            if line == '[remote "origin"]'
+              found_origin = true
+              git_origin_url = "HERE"
+            elsif found_origin && match = line.match(/^\s*url = (.*)$/)
+              git_origin_url = match[1]
+            end
+          end
+        end
+
+        { git_origin_url: git_origin_url, project_dir: project_dir }
+      end
 
       # Returns JS to be embeded. This takes one argument, a Web Property ID
       # (aka UA number).
       def tracking_code(piwik_url)
+        set_custom_vars = ''
+        @custom_vars.keys.each_with_index do |key, index|
+          value = @custom_vars[key]
+          if value
+            set_custom_vars += "_paq.push(['setCustomVariable', #{index + 1}, '#{key}', '#{value}', 'page']);\n"
+          end
+        end
         returning_value = <<-EOF
 <script type="text/javascript">
   var _paq = _paq || [];
+  #{set_custom_vars}
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
   (function() {
