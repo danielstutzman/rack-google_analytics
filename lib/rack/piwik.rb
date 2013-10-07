@@ -40,14 +40,14 @@ module Rack #:nodoc:
         git_origin_url = nil
         if git_dir
           config = ::File.join(git_dir, 'config')
-          found_origin = false
+          read_next_url = false
           ::File.open(config).each_line do |line|
             line.rstrip!
             if line == '[remote "origin"]'
-              found_origin = true
-              git_origin_url = "HERE"
-            elsif found_origin && match = line.match(/^\s*url = (.*)$/)
+              read_next_url = true
+            elsif read_next_url && match = line.match(/^\s*url = (.*)$/)
               git_origin_url = match[1]
+              read_next_url = false
             end
           end
         end
